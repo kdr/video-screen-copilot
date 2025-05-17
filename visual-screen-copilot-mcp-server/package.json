@@ -1,0 +1,38 @@
+{
+  "name": "visual-screen-copilot-mcp-server",
+  "type": "module",
+  "version": "4.2.0",
+  "main": "index.js",
+  "bin": {
+    "visual-screen-copilot-mcp-server": "build/index.js"
+  },
+  "scripts": {
+    "build": "tsc && shx chmod +x build/*.js",
+    "watch": "tsc --watch",
+    "prepare": "npm run build",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "visual-screen-copilot",
+    "modelcontextprotocol",
+    "mcp"
+  ],
+  "author": "KDR",
+  "license": "YOLO",
+  "description": "Visual Screen Copilot MCP Server",
+  "dependencies": {
+    "@aviaryhq/cloudglue-js": "^0.0.12",
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "dotenv": "^16.4.7",
+    "shx": "^0.4.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
+}
