@@ -38,19 +38,19 @@ export function registerDetailRecentScreenRecording(
     schema,
     async ({  }) => {
       const files = await cgClient.collections.listVideos(collection_id, {
-        limit: 15,
+        limit: 12,
       });
 
-      // Get all extracts first
-      let allExtracts: Extract[] = [];
-      try {
-        const extractsResponse = await cgClient.extract.listExtracts();
-        if (extractsResponse && extractsResponse.data) {
-          allExtracts = extractsResponse.data as Extract[];
-        }
-      } catch (error) {
-        console.error("Error fetching extracts:", error);
-      }
+      // // Get all extracts first
+      // let allExtracts: Extract[] = [];
+      // try {
+      //   const extractsResponse = await cgClient.extract.listExtracts();
+      //   if (extractsResponse && extractsResponse.data) {
+      //     allExtracts = extractsResponse.data as Extract[];
+      //   }
+      // } catch (error) {
+      //   console.error("Error fetching extracts:", error);
+      // }
 
       // Process each file to get additional information
       const processedFiles = await Promise.all(
@@ -68,20 +68,20 @@ export function registerDetailRecentScreenRecording(
             // Find the most recent extract for this file
             // Assuming extracts have some way to identify which file they're for
             // This could be through metadata, job_id, or some other identifier
-            const fileExtract = allExtracts.find(extract => 
-              extract.data && 
-              extract.data.file_id === file.file_id
-            );
+            // const fileExtract = allExtracts.find(extract => 
+            //   extract.data && 
+            //   extract.data.file_id === file.file_id
+            // );
             
             return {
               metadata: fileInfo.metadata,
               description: description,
               // Include extract data if found
-              extract: fileExtract ? {
-                extract_data: fileExtract.data || {},
-                extract_status: fileExtract.status,
-                job_id: fileExtract.job_id
-              } : null
+              // extract: fileExtract ? {
+              //   extract_data: fileExtract.data || {},
+              //   extract_status: fileExtract.status,
+              //   job_id: fileExtract.job_id
+              // } : null
             };
           })
       );

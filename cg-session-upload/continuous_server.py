@@ -89,21 +89,21 @@ def post_process_recording(session_id, file_path, timestamp=None):
         )
         logger.info(f"Uploaded file to CloudGlue: {f.id}")
         cgClient.collections.add_video(collection_id=TARGET_COLLECTION_ID, file_id=f.id)
-        cgClient.extract.create(
-            url=f.uri,
-            prompt="Extract programs and websites that appear on screen",
-            schema={
-                'programs': {
-                    'name': '<string>', 
-                    'applicationType': '<string>',                    
-                },
-                'websites': {
-                    'name': '<string>',
-                    'url': '<string>',
-                    'description': '<string>',
-                }
-            }
-        )
+        # cgClient.extract.create(
+        #     url=f.uri,
+        #     prompt="Extract programs and websites that appear on screen",
+        #     schema={
+        #         'programs': {
+        #             'name': '<string>', 
+        #             'applicationType': '<string>',                    
+        #         },
+        #         'websites': {
+        #             'name': '<string>',
+        #             'url': '<string>',
+        #             'description': '<string>',
+        #         }
+        #     }
+        # )
         
         # Update status on completion
         if recording_info:
