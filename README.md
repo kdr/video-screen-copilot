@@ -114,6 +114,21 @@ YOLO
 
 <img width="940" alt="image" src="https://github.com/user-attachments/assets/8946ab8d-7918-4eb2-9b7b-5437833f1249" />
 
+Deep Research Over Screen Recording
+
+<img width="719" alt="image" src="https://github.com/user-attachments/assets/36998ca3-124f-4bed-a506-a6c083fa80a6" />
+
+<img width="702" alt="image" src="https://github.com/user-attachments/assets/f3c6f614-d255-440e-8ab2-12c7762b6fba" />
+
+<img width="686" alt="image" src="https://github.com/user-attachments/assets/46e59cc4-c5fd-4244-8d85-213866b6bf74" />
+
+<img width="719" alt="image" src="https://github.com/user-attachments/assets/5c86636a-2990-41a8-a575-98c285f994f2" />
+
+
+
+<img width="885" alt="image" src="https://github.com/user-attachments/assets/5da3cf07-b59c-4d92-a3ed-fca0498c49bc" />
+
+
 ## Hackathon
 
 <img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/2t/a94f6b73-8b4a-42f8-8f03-bca3e5a1d1d6.png">
