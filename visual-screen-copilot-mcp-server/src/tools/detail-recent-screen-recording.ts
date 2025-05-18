@@ -38,7 +38,7 @@ export function registerDetailRecentScreenRecording(
     schema,
     async ({  }) => {
       const files = await cgClient.collections.listVideos(collection_id, {
-        limit: 30,
+        limit: 15,
       });
 
       // Get all extracts first
