@@ -1,7 +1,3 @@
-"""
-python continuous_server.py --percentage 70
-"""
-
 import os
 import subprocess
 import time
@@ -15,9 +11,11 @@ from flask import Flask, jsonify
 from cloudglue import CloudGlue
 from dotenv import load_dotenv
 
+# Initialize variables
 load_dotenv('dot.env')
 TARGET_COLLECTION_ID = os.getenv('TARGET_COLLECTION_ID')
-cgClient = CloudGlue(api_key=os.getenv('CLOUDGLUE_API_KEY'))
+API_KEY = os.getenv('CLOUDGLUE_API_KEY')
+cgClient = CloudGlue(api_key=API_KEY) if API_KEY else None
 
 # Set up logging
 logging.basicConfig(
@@ -91,21 +89,21 @@ def post_process_recording(session_id, file_path, timestamp=None):
         )
         logger.info(f"Uploaded file to CloudGlue: {f.id}")
         cgClient.collections.add_video(collection_id=TARGET_COLLECTION_ID, file_id=f.id)
-        cgClient.extract.create(
-            url=f.uri,
-            prompt="Extract programs and websites that appear on screen",
-            schema={
-                'programs': {
-                    'name': '<string>', 
-                    'applicationType': '<string>',                    
-                },
-                'websites': {
-                    'name': '<string>',
-                    'url': '<string>',
-                    'description': '<string>',
-                }
-            }
-        )
+        # cgClient.extract.create(
+        #     url=f.uri,
+        #     prompt="Extract programs and websites that appear on screen",
+        #     schema={
+        #         'programs': {
+        #             'name': '<string>', 
+        #             'applicationType': '<string>',                    
+        #         },
+        #         'websites': {
+        #             'name': '<string>',
+        #             'url': '<string>',
+        #             'description': '<string>',
+        #         }
+        #     }
+        # )
         
         # Update status on completion
         if recording_info:
@@ -238,6 +236,12 @@ def continuous_recording_process():
 def home():
     host = "localhost:5002"
     percentage = recording_state["screen_percentage"]
+    is_active = recording_state["is_active"]
+    status_text = "Recording Active" if is_active else "Recording Inactive"
+    button_text = "Stop Recording" if is_active else "Start Recording"
+    button_action = "stopRecording()" if is_active else "startRecording()"
+    button_color = "#ff4444" if is_active else "#44cc44"
+
     html = f"""
     <!DOCTYPE html>
     <html>
@@ -276,14 +280,93 @@ def home():
                 padding: 10px;
                 margin-bottom: 20px;
             }}
+            .controls {{
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                background-color: #f5f5f5;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 30px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }}
+            .status {{
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }}
+            .actions {{
+                display: flex;
+                gap: 10px;
+            }}
+            button {{
+                padding: 12px 24px;
+                border: none;
+                border-radius: 4px;
+                font-size: 16px;
+                font-weight: bold;
+                color: white;
+                cursor: pointer;
+                transition: opacity 0.2s;
+            }}
+            button:hover {{
+                opacity: 0.9;
+            }}
+            #recordButton {{
+                background-color: {button_color};
+            }}
+            #percentageControl {{
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }}
+            #percentageSlider {{
+                flex-grow: 1;
+            }}
+            .loading {{
+                display: none;
+                margin-left: 10px;
+            }}
+            .spinner {{
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(0,0,0,0.1);
+                border-radius: 50%;
+                border-top-color: #333;
+                animation: spin 1s ease-in-out infinite;
+            }}
+            @keyframes spin {{
+                to {{ transform: rotate(360deg); }}
+            }}
         </style>
     </head>
     <body>
-        <h1>Continuous Screen Recorder API Documentation</h1>
+        <h1>Continuous Screen Recorder</h1>
+        
+        <div class="controls">
+            <div class="status" id="statusText">{status_text}</div>
+            <div class="actions">
+                <button id="recordButton" onclick="{button_action}">{button_text}</button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            <div id="percentageControl">
+                <label for="percentageSlider">Screen %:</label>
+                <input type="range" id="percentageSlider" min="10" max="100" value="{percentage}" 
+                    oninput="updatePercentageValue(this.value)">
+                <span id="percentageValue">{percentage}%</span>
+                <button id="setPercentageBtn" onclick="setPercentage()" 
+                    style="background-color: #2196F3; padding: 8px 16px;">Apply</button>
+            </div>
+        </div>
         
         <div class="info">
             <p><strong>Current Configuration:</strong> Recording the left {percentage}% of the screen</p>
         </div>
+        
+        <h2>API Documentation</h2>
         
         <div class="endpoint">
             <h2>Start Continuous Recording</h2>
@@ -340,6 +423,92 @@ def home():
   "message": "Screen percentage set to 50%"
 }}</code></pre>
         </div>
+
+        <script>
+            function showLoading() {{
+                document.getElementById('loading').style.display = 'block';
+            }}
+            
+            function hideLoading() {{
+                document.getElementById('loading').style.display = 'none';
+            }}
+            
+            function updateUI(isRecording) {{
+                const statusText = document.getElementById('statusText');
+                const recordButton = document.getElementById('recordButton');
+                
+                statusText.textContent = isRecording ? 'Recording Active' : 'Recording Inactive';
+                recordButton.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
+                recordButton.style.backgroundColor = isRecording ? '#ff4444' : '#44cc44';
+                recordButton.onclick = isRecording ? stopRecording : startRecording;
+            }}
+            
+            function startRecording() {{
+                showLoading();
+                fetch('/start')
+                    .then(response => response.json())
+                    .then(data => {{
+                        if (data.status === 'started') {{
+                            updateUI(true);
+                        }} else {{
+                            alert('Error: ' + data.message);
+                        }}
+                    }})
+                    .catch(error => {{
+                        alert('Error starting recording: ' + error);
+                    }})
+                    .finally(() => {{
+                        hideLoading();
+                    }});
+            }}
+            
+            function stopRecording() {{
+                showLoading();
+                fetch('/stop')
+                    .then(response => response.json())
+                    .then(data => {{
+                        if (data.status === 'stopped') {{
+                            updateUI(false);
+                        }} else {{
+                            alert('Error: ' + data.message);
+                        }}
+                    }})
+                    .catch(error => {{
+                        alert('Error stopping recording: ' + error);
+                    }})
+                    .finally(() => {{
+                        hideLoading();
+                    }});
+            }}
+            
+            function updatePercentageValue(value) {{
+                document.getElementById('percentageValue').textContent = value + '%';
+            }}
+            
+            function setPercentage() {{
+                const percentage = document.getElementById('percentageSlider').value;
+                showLoading();
+                fetch(`/set_percentage/${{percentage}}`)
+                    .then(response => response.json())
+                    .then(data => {{
+                        if (data.status === 'success') {{
+                            // Update the info section
+                            const infoSection = document.querySelector('.info p strong');
+                            if (infoSection) {{
+                                infoSection.parentNode.innerHTML = `<strong>Current Configuration:</strong> Recording the left ${{percentage}}% of the screen`;
+                            }}
+                        }} else {{
+                            alert('Error: ' + data.message);
+                        }}
+                    }})
+                    .catch(error => {{
+                        alert('Error setting percentage: ' + error);
+                    }})
+                    .finally(() => {{
+                        hideLoading();
+                    }});
+            }}
+        </script>
     </body>
     </html>
     """
@@ -432,12 +601,37 @@ if __name__ == '__main__':
                         help='Percentage of the screen to record (0-100, left side)')
     parser.add_argument('--port', type=int, default=5002,
                         help='Port to run the server on')
+    parser.add_argument('--api-key', type=str, default=None,
+                        help='CloudGlue API key (defaults to CLOUDGLUE_API_KEY env variable)')
+    parser.add_argument('--collection-id', type=str, default=None,
+                        help='Target CloudGlue collection ID (defaults to TARGET_COLLECTION_ID env variable)')
     
     args = parser.parse_args()
     
     # Validate percentage
     if args.percentage < 0 or args.percentage > 100:
         logger.error("Error: Percentage must be between 0 and 100")
+        exit(1)
+    
+    # Set up CloudGlue client with command-line arg or environment variable
+    if args.api_key:
+        cgClient = CloudGlue(api_key=args.api_key)
+        logger.info("Using CloudGlue API key from command-line argument")
+    elif not API_KEY:
+        logger.error("Error: CloudGlue API key not provided. Use --api-key or set CLOUDGLUE_API_KEY environment variable")
+        exit(1)
+    elif cgClient is None:
+        cgClient = CloudGlue(api_key=API_KEY)
+    
+    # Set up target collection ID with command-line arg or environment variable
+    if args.collection_id:
+        # Update the module's TARGET_COLLECTION_ID variable
+        import sys
+        current_module = sys.modules[__name__]
+        setattr(current_module, 'TARGET_COLLECTION_ID', args.collection_id)
+        logger.info(f"Using target collection ID from command-line argument")
+    elif not TARGET_COLLECTION_ID:
+        logger.error("Error: Target collection ID not provided. Use --collection-id or set TARGET_COLLECTION_ID environment variable")
         exit(1)
     
     # Set the screen percentage in the recording state
