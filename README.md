@@ -2,7 +2,7 @@
 
 A tool to record your screen, index it with CloudGlue AI, and ask questions about what you've seen on your screen using the Model Context Protocol (MCP).
 
-Demo vids: [▶️ YouTube Playlist]([https://www.youtube.com/watch?v=wjD4Dz2HZpc&list=PL5TLz9GcWHcgYltVOZgc2Jl5Xi1ZCeLlh](https://www.youtube.com/watch?v=wjD4Dz2HZpc&list=PL5TLz9GcWHcgYltVOZgc2Jl5Xi1ZCeLlh))
+Demo vids: [▶️ YouTube Playlist](https://www.youtube.com/watch?v=wjD4Dz2HZpc&list=PL5TLz9GcWHcgYltVOZgc2Jl5Xi1ZCeLlh)
 
 ## Prerequisites
 
