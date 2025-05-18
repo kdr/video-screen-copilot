@@ -107,3 +107,8 @@ To use this project with an MCP-compatible AI assistant, add the following confi
 ## License
 
 YOLO
+
+<img width="932" alt="image" src="https://github.com/user-attachments/assets/3c6b3854-f209-4e1a-acab-01c9e7eb779c" />
+
+<img width="940" alt="image" src="https://github.com/user-attachments/assets/8946ab8d-7918-4eb2-9b7b-5437833f1249" />
+
