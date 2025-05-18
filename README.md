@@ -114,3 +114,10 @@ YOLO
 
 <img width="940" alt="image" src="https://github.com/user-attachments/assets/8946ab8d-7918-4eb2-9b7b-5437833f1249" />
 
+## Hackathon
+
+<img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=400,height=400/event-covers/2t/a94f6b73-8b4a-42f8-8f03-bca3e5a1d1d6.png">
+
+[World's Biggest MCP Hackathon](https://lu.ma/t4zeld9m)
+
+* Saturday, May 17, 2025
