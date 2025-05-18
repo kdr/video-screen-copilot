@@ -36,9 +36,17 @@ A Flask-based server that records your screen and sends the recordings to CloudG
 
 #### Usage
 
-To start the server and record 70% of your screen:
+Start the server with your preferred options:
+
 ```bash
+# Using environment variables from .env file
 python continuous_server.py --percentage 70
+
+# Explicitly providing API key and collection ID
+python continuous_server.py --percentage 70 --api-key your_api_key_here --collection-id your_collection_id_here
+
+# Additional options
+python continuous_server.py --port 5002 --percentage 70
 ```
 
 API endpoints:
